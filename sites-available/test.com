@@ -13,12 +13,8 @@ server {
   listen 80 default_server;
   listen [::]:80 default_server;
 
-  root /home/administrator/login-app/public;
   server_name test.com www.test.com;
 
-  location /{
-     redi
-  }
   location /chat {
           proxy_pass http://myapp;
           proxy_http_version 1.1;
