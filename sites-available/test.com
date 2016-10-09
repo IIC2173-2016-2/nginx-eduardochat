@@ -3,7 +3,7 @@ upstream myapp {
     server assw11.ing.puc.cl:3000;
 
 }
-lua_package_path "usr/local/lib/lua/5.1/?.lua;;";
+lua_package_path "/usr/local/lib/lua/5.1/?.lua;;";
 server {
   listen 80 default_server;
   listen [::]:80 default_server;
@@ -12,7 +12,6 @@ server {
   server_name test.com www.test.com;
 
   location / {
-
           proxy_pass http://myapp;
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
@@ -22,7 +21,6 @@ server {
   }
 
   location /simple/ {
-
           proxy_pass http://myapp;
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
@@ -33,7 +31,6 @@ server {
 
   location /test {
     content_by_lua_block {
-
             local redis = require "redis"
             local red = redis:new()
             local ok,err = red:connect("127.0.0.1",6379)
@@ -46,7 +43,6 @@ server {
             red:set("test","Its workiiiiiiing gud")
             local value = red:get("test")
             ngx.say(value)
-
     }
   }
 }
