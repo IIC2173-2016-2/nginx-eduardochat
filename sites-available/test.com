@@ -25,7 +25,7 @@ server {
   server_name test.com www.test.com;
 
   location / {
-         proxy_pass http://myapp;
+          proxy_pass http://myapp;
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection 'upgrade';
@@ -55,6 +55,20 @@ server {
           proxy_cache_bypass $http_upgrade;
           
   }
+  location /socket.io {
+          if ($http_referer ~ /chat/chat_room/(\d+)) {
+		set $chat_n $1;
+	  }
+          set_by_lua $chat_server '
+              return (ngx.var.chat_n % 3) + 1
+         ';
+          proxy_pass http://myapp$chat_server;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host $host;
+          proxy_cache_bypass $http_upgrade;
+  }
   location /users {
           proxy_pass http://login-app;
           proxy_http_version 1.1;
@@ -63,7 +77,6 @@ server {
           proxy_set_header Host $host;
           proxy_cache_bypass $http_upgrade;
   }
-
   location /test {
     content_by_lua_block {
             local redis = require "redis"
