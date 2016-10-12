@@ -15,6 +15,16 @@ server {
 
   server_name test.com www.test.com;
 
+  location / {
+         proxy_pass http://myapp;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host $host;
+          proxy_cache_bypass $http_upgrade;
+
+  }
+
   location /chat {
           proxy_pass http://myapp;
           proxy_http_version 1.1;
