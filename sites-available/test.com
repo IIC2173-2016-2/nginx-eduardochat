@@ -43,7 +43,11 @@ server {
 	  
   }
   location ~ /chat/chat_room/(\d+) {
-          proxy_pass http://myapp$1;
+	  set $chat_n $1;
+	  set_by_lua $chat_server '
+              return (ngx.var.chat_n % 3) + 1
+         ';
+          proxy_pass http://myapp$chat_server;
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection 'upgrade';
