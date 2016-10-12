@@ -3,7 +3,16 @@ upstream myapp {
     server assw10.ing.puc.cl:3000;
     server assw11.ing.puc.cl:3000;
     server assw12.ing.puc.cl:3000;
-    sticky;
+    #sticky;
+}
+upstream myapp1 {
+    server assw10.ing.puc.cl:3000;
+}
+upstream myapp2 {
+    server assw11.ing.puc.cl:3000;
+}
+upstream myapp3 {
+    server assw12.ing.puc.cl:3000;
 }
 upstream login-app{
    server assw9.ing.puc.cl:3000;
@@ -24,7 +33,6 @@ server {
           proxy_cache_bypass $http_upgrade;
 
   }
-
   location /chat {
           proxy_pass http://myapp;
           proxy_http_version 1.1;
@@ -32,6 +40,16 @@ server {
           proxy_set_header Connection 'upgrade';
           proxy_set_header Host $host;
           proxy_cache_bypass $http_upgrade;
+	  
+  }
+  location ~ /chat/chat_room/(\d+) {
+          proxy_pass http://myapp$1;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host $host;
+          proxy_cache_bypass $http_upgrade;
+          
   }
   location /users {
           proxy_pass http://login-app;
