@@ -1,9 +1,14 @@
-# Descripcion
+# Description
 
-Este repo contiene archivos de configuracion de Nginx. Tanto el inicial como el para los sitios a implementar.
+This repo contains all the Nginx configuration files for EduardoChat.
 
-# Comandos útiles
+# Useful commands
 
-Para iniciar NGINX: nginx -p `pwd`/ -c conf/nginx.conf
-
-Para resetearlo: sudo nginx -s reload
+To start NGINX (We are using [OpenResty](https://github.com/IIC2173-2016-2/openresty-eduardochat)) execute
+```{r, engine='sh', count_lines}
+nginx -p `pwd`/ -c conf/nginx.conf
+```
+To restart
+```{r, engine='sh', count_lines}
+sudo nginx -s reload
+```
