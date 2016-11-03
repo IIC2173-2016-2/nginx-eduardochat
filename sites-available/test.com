@@ -19,13 +19,13 @@ upstream myapp1 {
 }
 upstream myapp2 {
     server assw11.ing.puc.cl:3000;
-    
+
     server assw12.ing.puc.cl:3000 backup;
 
 }
 upstream myapp3 {
     server assw12.ing.puc.cl:3000;
-    
+
     server assw10.ing.puc.cl:3000 backup;
 
 }
@@ -33,11 +33,20 @@ upstream login-app{
    server assw9.ing.puc.cl:3000;
 }
 lua_package_path "/usr/local/lib/lua/5.1/?.lua;;";
-server {
-  listen 80 default_server;
-  listen [::]:80 default_server;
 
-  server_name test.com www.test.com;
+server {
+    listen 80;
+    server_name assw9.ing.puc.cl;
+    return 301 https://assw9.ing.puc.cl$request_uri;
+}
+
+server {
+  listen 443 ssl;
+  server_name assw9.ing.puc.cl;
+
+  ssl_certificate /etc/letsencrypt/live/assw9.ing.puc.cl/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/assw9.ing.puc.cl/privkey.pem;
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 
   location / {
           proxy_pass http://mydashboard;
@@ -58,7 +67,7 @@ server {
           proxy_set_header Connection 'upgrade';
           proxy_set_header Host $host;
           proxy_cache_bypass $http_upgrade;
-	  
+
   }
   location ~ /chat/chat_room/(\d+) {
 	  set $chat_n $1;
@@ -68,7 +77,7 @@ server {
 		do
 		number = number + string.byte(ngx.var.chat_n,i)
 	    end
-	    return (number%3) +1  
+	    return (number%3) +1
          ';
           proxy_pass http://myapp$chat_server;
           proxy_http_version 1.1;
@@ -76,7 +85,7 @@ server {
           proxy_set_header Connection 'upgrade';
           proxy_set_header Host $host;
           proxy_cache_bypass $http_upgrade;
-          
+
   }
   location /css {
   	proxy_pass http://login-app;
