@@ -1,3 +1,4 @@
 # log files
 logs/*
 !logs/.gitkeep
+*.log
