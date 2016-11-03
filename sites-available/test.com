@@ -12,6 +12,12 @@ upstream mydashboard {
     server assw12.ing.puc.cl:8081;
     #sticky;
 }
+upstream arquicoins {
+    least_conn;
+    server assw10.ing.puc.cl:8083;
+    server assw11.ing.puc.cl:8083;
+    server assw12.ing.puc.cl:8083;
+}
 upstream myapp1 {
     server assw10.ing.puc.cl:3000;
 
@@ -50,6 +56,15 @@ server {
 
   location / {
           proxy_pass http://mydashboard;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host $host;
+          proxy_cache_bypass $http_upgrade;
+
+  }
+  location /arquicoins {
+          proxy_pass http://arquicoins;
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection 'upgrade';
