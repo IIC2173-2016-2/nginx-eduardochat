@@ -85,11 +85,20 @@ server {
 
   }
   location ~ /chat/chat_room/(\d+)(/.*)? {
+      set_by_lua $chat_server '
+  	    number = 0
+              for i = 1,string.len(ngx.var.chat_n)
+  		do
+  		number = number + string.byte(ngx.var.chat_n,i)
+  	    end
+  	    return (number%3) +1
+           ';
 	  set $chat_n $1;
 	  set $user_n $2;
     content_by_lua_block {
             ngx.say(ngx.var.chat_n)
             ngx.say(ngx.var.user_n)
+            ngx.say(ngx.var.chat_server)
     }
 #	  set $chat_n $1;
 #	  set_by_lua $chat_server '
