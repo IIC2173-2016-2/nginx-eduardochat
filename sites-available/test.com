@@ -85,6 +85,8 @@ server {
 
   }
   location ~ /chat/chat_room/(\d+)(/.*)? {
+	  set $chat_n $1;
+	  set $user_n $2;
     content_by_lua_block {
             local redis = require "redis"
             local red = redis:new()
@@ -93,11 +95,11 @@ server {
                     ngx.say("failed to connect: ",err)
                     return
             end
-            ngx.say($1)
+            ngx.say(ngx.var.chat_n)
             red:select(0)
             red:set("test","Its workiiiiiiing gud")
             local value = red:get("test")
-            ngx.say($2)
+            ngx.say(ngx.var.user_n)
     }
 #	  set $chat_n $1;
 #	  set_by_lua $chat_server '
