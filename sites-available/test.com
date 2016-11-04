@@ -84,7 +84,7 @@ server {
           proxy_cache_bypass $http_upgrade;
 
   }
-  location ~ /chat/chat_room/(\d+) {
+  location ~ /chat/chat_room/(\d+)(/.*)? {
 	  set $chat_n $1;
 	  set_by_lua $chat_server '
 	    number = 0
@@ -102,6 +102,23 @@ server {
           proxy_cache_bypass $http_upgrade;
 
   }
+  location /api {
+	set $chat_n $1;
+          set_by_lua $chat_server '
+            number = 0
+            for i = 1,string.len(ngx.var.chat_n)
+                do
+                number = number + string.byte(ngx.var.chat_n,i)
+            end
+            return (number%3) +1
+         ';
+          proxy_pass http://myapp$chat_server;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host $host;
+          proxy_cache_bypass $http_upgrade;
+  }
   location /css {
   	proxy_pass http://login-app;
   }
@@ -118,6 +135,14 @@ server {
 	    return (number%3) +1
          ';
           proxy_pass http://myapp$chat_server;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host $host;
+          proxy_cache_bypass $http_upgrade;
+  }
+  location /eduardo-chat {
+	  proxy_pass http://myapp;
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection 'upgrade';
