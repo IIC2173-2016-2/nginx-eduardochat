@@ -88,17 +88,7 @@ server {
 	  set $chat_n $1;
 	  set $user_n $2;
     content_by_lua_block {
-            local redis = require "redis"
-            local red = redis:new()
-            local ok,err = red:connect("127.0.0.1",6379)
-            if not ok then
-                    ngx.say("failed to connect: ",err)
-                    return
-            end
             ngx.say(ngx.var.chat_n)
-            red:select(0)
-            red:set("test","Its workiiiiiiing gud")
-            local value = red:get("test")
             ngx.say(ngx.var.user_n)
     }
 #	  set $chat_n $1;
