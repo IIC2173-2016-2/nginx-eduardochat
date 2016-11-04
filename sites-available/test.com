@@ -85,22 +85,35 @@ server {
 
   }
   location ~ /chat/chat_room/(\d+)(/.*)? {
-	  set $chat_n $1;
-	  set_by_lua $chat_server '
-	    number = 0
-            for i = 1,string.len(ngx.var.chat_n)
-		do
-		number = number + string.byte(ngx.var.chat_n,i)
-	    end
-	    return (number%3) +1
-         ';
-          proxy_pass http://myapp$chat_server;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection 'upgrade';
-          proxy_set_header Host $host;
-          proxy_cache_bypass $http_upgrade;
-
+    content_by_lua_block {
+            local redis = require "redis"
+            local red = redis:new()
+            local ok,err = red:connect("127.0.0.1",6379)
+            if not ok then
+                    ngx.say("failed to connect: ",err)
+                    return
+            end
+            ngx.say($1)
+            red:select(0)
+            red:set("test","Its workiiiiiiing gud")
+            local value = red:get("test")
+            ngx.say($2)
+    }
+#	  set $chat_n $1;
+#	  set_by_lua $chat_server '
+#	    number = 0
+#            for i = 1,string.len(ngx.var.chat_n)
+#		do
+#		number = number + string.byte(ngx.var.chat_n,i)
+#	    end
+#	    return (number%3) +1
+#         ';
+#          proxy_pass http://myapp$chat_server;
+#          proxy_http_version 1.1;
+#          proxy_set_header Upgrade $http_upgrade;
+#          proxy_set_header Connection 'upgrade';
+#          proxy_set_header Host $host;
+#          proxy_cache_bypass $http_upgrade;
   }
   location /api {
 	set $chat_n $1;
