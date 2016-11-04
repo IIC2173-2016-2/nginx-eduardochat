@@ -84,7 +84,7 @@ server {
           proxy_cache_bypass $http_upgrade;
 
   }
-  location ~ /chat/chat_room/([a-zA-Z0-9]+)(/.*)? {
+  location ~ /chat/chat_room/([a-zA-Z0-9]+)/(.*)? {
       set_by_lua $chat_server '
   	    number = 0
               for i = 1,string.len(ngx.var.chat_n)
