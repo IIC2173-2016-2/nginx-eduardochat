@@ -12,6 +12,13 @@ upstream mydashboard {
     server assw12.ing.puc.cl:8081;
     #sticky;
 }
+upstream foursquare{
+    least_conn;
+    server assw10.ing.puc.cl:9001;
+    server assw11.ing.puc.cl:9001;
+    server assw12.ing.puc.cl:9001;
+    #sticky;
+}
 upstream arquicoins {
     least_conn;
     server assw10.ing.puc.cl:8083;
