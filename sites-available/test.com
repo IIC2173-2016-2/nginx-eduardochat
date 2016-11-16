@@ -88,58 +88,57 @@ server {
 	  set $chat_n $1;
 	  set_by_lua $chat_server '
 	    number = 0
-            for i = 1,string.len(ngx.var.chat_n)
-		do
-		number = number + string.byte(ngx.var.chat_n,i)
+      for i = 1,string.len(ngx.var.chat_n)
+		  do
+		    number = number + string.byte(ngx.var.chat_n,i)
 	    end
 	    return (number%3) +1
-         ';
-          proxy_pass http://myapp$chat_server;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection 'upgrade';
-          proxy_set_header Host $host;
-          proxy_cache_bypass $http_upgrade;
-
+    ';
+    proxy_pass http://myapp$chat_server;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
   }
   location /api {
-	set $chat_n $1;
-          set_by_lua $chat_server '
-            number = 0
-            for i = 1,string.len(ngx.var.chat_n)
-                do
-                number = number + string.byte(ngx.var.chat_n,i)
-            end
-            return (number%3) +1
-         ';
-          proxy_pass http://myapp$chat_server;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection 'upgrade';
-          proxy_set_header Host $host;
-          proxy_cache_bypass $http_upgrade;
+  	set $chat_n $http_chat_id;
+	  set_by_lua $chat_server '
+	    number = 0
+      for i = 1,string.len(ngx.var.chat_n)
+		  do
+		    number = number + string.byte(ngx.var.chat_n,i)
+	    end
+	    return (number%3) +1
+    ';
+    proxy_pass http://myapp$chat_server;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
+  location /socket.io {
+    if ($http_referer ~ /chat/chat_room/(\d+)) {
+		  set $chat_n $1;
+	  }
+	  set_by_lua $chat_server '
+	    number = 0
+      for i = 1,string.len(ngx.var.chat_n)
+		  do
+		    number = number + string.byte(ngx.var.chat_n,i)
+	    end
+	    return (number%3) +1
+    ';
+    proxy_pass http://myapp$chat_server;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
   }
   location /css {
   	proxy_pass http://login-app;
-  }
-  location /socket.io {
-          if ($http_referer ~ /chat/chat_room/(\d+)) {
-		set $chat_n $1;
-	  }
-          set_by_lua $chat_server '
-	    number = 0
-            for i = 1,string.len(ngx.var.chat_n)
-		do
-		number = number + string.byte(ngx.var.chat_n,i)
-	    end
-	    return (number%3) +1
-         ';
-          proxy_pass http://myapp$chat_server;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection 'upgrade';
-          proxy_set_header Host $host;
-          proxy_cache_bypass $http_upgrade;
   }
   location /eduardo-chat {
 	  proxy_pass http://myapp;
@@ -190,5 +189,12 @@ server {
             local value = red:get("test")
             ngx.say("hola")
     }
+    location /header_test {
+      content_by_lua_block {
+              ngx.say("testing_nginx_headers_reading")
+              ngx.say($http_chat_id)
+              ngx.say($http_test)
+              ngx.say($http_TEST)
+      }
   }
 }
