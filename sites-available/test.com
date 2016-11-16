@@ -196,12 +196,13 @@ server {
             local value = red:get("test")
             ngx.say("hola")
     }
-    location /header_test {
-      content_by_lua_block {
-              ngx.say("testing_nginx_headers_reading")
-              ngx.say($http_chat_id)
-              ngx.say($http_test)
-              ngx.say($http_TEST)
-      }
+  }
+  location /header_test {
+    content_by_lua_block {
+            ngx.say("testing_nginx_headers_reading")
+            ngx.say($http_chat_id)
+            ngx.say($http_test)
+            ngx.say($http_TEST)
+    }
   }
 }
