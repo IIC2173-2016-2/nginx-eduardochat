@@ -25,18 +25,18 @@ upstream arquicoins {
     server assw11.ing.puc.cl:8083;
     server assw12.ing.puc.cl:8083;
 }
-upstream myapp1 {
+upstream myapp10 {
     server assw10.ing.puc.cl:3000;
 
     server assw11.ing.puc.cl:3000 backup;
 }
-upstream myapp2 {
+upstream myapp11 {
     server assw11.ing.puc.cl:3000;
 
     server assw12.ing.puc.cl:3000 backup;
 
 }
-upstream myapp3 {
+upstream myapp12 {
     server assw12.ing.puc.cl:3000;
 
     server assw10.ing.puc.cl:3000 backup;
@@ -96,10 +96,10 @@ server {
             do
                 number = number + string.byte(ngx.var.chat_n,i)
             end
-            return (number%3) +1
+            return (number%3) +10
         ';
         
-        add_header TARGET-SERVER $chat_server+9;
+        add_header TARGET-SERVER $chat_server;
         
         proxy_pass http://myapp$chat_server;
         proxy_http_version 1.1;
@@ -116,10 +116,10 @@ server {
             do
                 number = number + string.byte(ngx.var.chat_n,i)
             end
-            return (number%3) +1
+            return (number%3) +10
         ';
         
-        add_header TARGET-SERVER $chat_server+9;
+        add_header TARGET-SERVER $chat_server;
         
         proxy_pass http://myapp$chat_server;
         proxy_http_version 1.1;
@@ -137,10 +137,10 @@ server {
                 number = number + string.byte(ngx.var.chat_n,i)
             end
             number = number + 1
-            return (number%3) +1
+            return (number%3) +10
         ';
         
-        add_header TARGET-SERVER $chat_server+9;
+        add_header TARGET-SERVER $chat_server;
         
         proxy_pass http://myapp$chat_server;
         proxy_http_version 1.1;
@@ -159,10 +159,10 @@ server {
             do
                 number = number + string.byte(ngx.var.chat_n,i)
             end
-            return (number%3) +1
+            return (number%3) +10
         ';
         
-        add_header TARGET-SERVER $chat_server+9;
+        add_header TARGET-SERVER $chat_server;
         
         proxy_pass http://myapp$chat_server;
         proxy_http_version 1.1;
