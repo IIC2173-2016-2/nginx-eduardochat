@@ -104,6 +104,8 @@ server {
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
+        
+        add_header TARGET-SERVER $chat_server;
     }
     location /api {
         set $chat_n $http_chat_id;
@@ -121,6 +123,8 @@ server {
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
+        
+        add_header TARGET-SERVER $chat_server;
     }
     location /api/v1/backup {
         set $chat_n $http_chat_id;
@@ -139,6 +143,8 @@ server {
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
+        
+        add_header TARGET-SERVER $chat_server;
     }
     location /socket.io {
         if ($http_referer ~ /chat/chat_room/(\d+)) {
@@ -158,12 +164,14 @@ server {
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
+        
+        add_header TARGET-SERVER $chat_server;
     }
     location /css {
       	proxy_pass http://login-app;
     }
     location /eduardo-chat {
-    	  proxy_pass http://myapp;
+    	proxy_pass http://myapp;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
