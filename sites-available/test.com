@@ -122,6 +122,24 @@ server {
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
     }
+    location /api/v1/backup {
+        set $chat_n $http_chat_id;
+        set_by_lua $chat_server '
+            number = 0
+            for i = 1,string.len(ngx.var.chat_n)
+            do
+                number = number + string.byte(ngx.var.chat_n,i)
+            end
+            number = number + 1
+            return (number%3) +1
+        ';
+        proxy_pass http://myapp$chat_server;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
     location /socket.io {
         if ($http_referer ~ /chat/chat_room/(\d+)) {
             set $chat_n $1;
