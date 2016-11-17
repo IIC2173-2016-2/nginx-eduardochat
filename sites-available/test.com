@@ -206,6 +206,14 @@ server {
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
     }
+    location /my_chats {
+        proxy_pass http://foursquare;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
     location /test {
         content_by_lua_block {
             local redis = require "redis"
