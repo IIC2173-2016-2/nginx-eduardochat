@@ -99,7 +99,7 @@ server {
             return (number%3) +1
         ';
         
-        add_header TARGET-SERVER $chat_server;
+        add_header TARGET-SERVER $chat_server+9;
         
         proxy_pass http://myapp$chat_server;
         proxy_http_version 1.1;
@@ -119,7 +119,7 @@ server {
             return (number%3) +1
         ';
         
-        add_header TARGET-SERVER $chat_server;
+        add_header TARGET-SERVER $chat_server+9;
         
         proxy_pass http://myapp$chat_server;
         proxy_http_version 1.1;
@@ -140,7 +140,7 @@ server {
             return (number%3) +1
         ';
         
-        add_header TARGET-SERVER $chat_server;
+        add_header TARGET-SERVER $chat_server+9;
         
         proxy_pass http://myapp$chat_server;
         proxy_http_version 1.1;
@@ -162,7 +162,7 @@ server {
             return (number%3) +1
         ';
         
-        add_header TARGET-SERVER $chat_server;
+        add_header TARGET-SERVER $chat_server+9;
         
         proxy_pass http://myapp$chat_server;
         proxy_http_version 1.1;
